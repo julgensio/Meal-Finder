@@ -24,9 +24,30 @@ function searchMeal(e) {
 		const getMeals = async () => {
 			const res = await fetch(url);
 			if (res.status >= 200 && res.status <= 299) {
-				const jsonRes = await res.json();
+				const data = await res.json();
+				resultHeading.textContent = `Search results for:   '${term}'`;
 
-				resultHeading.textContent = `Search results for:  ${term}`;
+				// Check meal with search term
+				if (data.meals === null) {
+					resultHeading.style.color = 'var(--error-color)';
+					resultHeading.textContent = `Sorry, no search results for: ${term} Try again!`;
+				} else {
+				}
+
+				// still need to fix innerHTML
+				mealsEl.innerHTML = data.meals
+					.map(
+						(meal) =>
+							`<div class="meal">
+							<img src ="${meal.strMealThumb}" "alt=${meal.strMeal}" />
+							<div class="meal-info" data-mealID="${meal.idMeal}">
+							<h3 class="meal-title">${meal.strMeal}</h3></div>
+						</div>`
+					)
+					.join('');
+
+				// Clear search text
+				search.value = ' ';
 			} else {
 				console.log(res.status, res.statusText);
 			}
